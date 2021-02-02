@@ -58,8 +58,10 @@ function store(e){
 
 //function when operator act as an equal operator ex. 12 + 7 - 5 * 3 =
 function equal(){
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     if(firstNumber === undefined) return;
+    let result;
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+    
     if (clearIndicator == 1){
         if(operatorIndicator === 0){
             secondNumber= secondNumber;
@@ -68,23 +70,31 @@ function equal(){
         else{
         secondNumber = parseFloat(screen.textContent);
         }
+
         if(Number.isNaN(secondNumber)) return;
-        else{
-        screen.textContent=operate(firstNumber, secondNumber, operator);
-        clearIndicator = 0;
-        decimalIndicator = 1;
-        i=0;
-        }
+        
+        result = operate(firstNumber, secondNumber, operator);
+            if(Number.isNaN(result) || result === Infinity){
+                clear();
+                screen.textContent="Error";
+            }
+            else{
+                screen.textContent=result;
+                clearIndicator = 0;
+                decimalIndicator = 1;
+                i=0;
+            }
+        
     }
     else{
-    firstNumber = operate(firstNumber, secondNumber, operator);
+        firstNumber = operate(firstNumber, secondNumber, operator);
         if(Number.isNaN(secondNumber)) return;
         else{
         screen.textContent=operate(firstNumber, secondNumber, operator);
         i=0;
         }
     }
-    equation.textContent=`${firstNumber} ${convertOperator(operator)} ${secondNumber} =`;
+    (screen.textContent==="Error") ? equation.textContent="" : equation.textContent=`${firstNumber} ${convertOperator(operator)} ${secondNumber} =`;
 }
 
 //function when equals button is pressed
@@ -220,11 +230,7 @@ function multiply(a,b){
 }
 
 function division(a,b){
-    if(Math.round((a/b)*100000)/100000 === Infinity){
-        alert('Error');
-        clear();
-    }
-    else return Math.round((a/b)*100000)/100000;
+    return Math.round((a/b)*100000)/100000;
 }
 
 function convertOperator(operator) {
