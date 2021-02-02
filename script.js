@@ -49,7 +49,6 @@ function store(e){
     else return;
     if(operatorIndicator ===0){
         operatorStore(targetOperation)
-        operatorIndicator = 1;
     }
     else{
         equal();
@@ -102,6 +101,9 @@ function clear(e){
     clearIndicator = 1;
     screen.textContent="";
     equation.textContent="";
+    i =0; 
+    decimalIndicator =1; 
+    operatorIndicator = 0; 
 }
 
 function numberSelect(e){
