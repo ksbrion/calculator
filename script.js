@@ -59,18 +59,31 @@ function store(e){
 
 //function when operator act as an equal operator ex. 12 + 7 - 5 * 3 =
 function equal(){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     if(firstNumber === undefined) return;
     if (clearIndicator == 1){
-    secondNumber = parseFloat(screen.textContent);
-    screen.textContent=operate(firstNumber, secondNumber, operator);
-    clearIndicator = 0;
-    decimalIndicator = 1;
-    i=0; 
+        if(operatorIndicator === 0){
+            secondNumber= secondNumber;
+            firstNumber = parseFloat(screen.textContent);
+        }
+        else{
+        secondNumber = parseFloat(screen.textContent);
+        }
+        if(Number.isNaN(secondNumber)) return;
+        else{
+        screen.textContent=operate(firstNumber, secondNumber, operator);
+        clearIndicator = 0;
+        decimalIndicator = 1;
+        i=0;
+        }
     }
     else{
     firstNumber = operate(firstNumber, secondNumber, operator);
-    screen.textContent=operate(firstNumber, secondNumber, operator);
-    i=0;
+        if(Number.isNaN(secondNumber)) return;
+        else{
+        screen.textContent=operate(firstNumber, secondNumber, operator);
+        i=0;
+        }
     }
     equation.textContent=`${firstNumber} ${convertOperator(operator)} ${secondNumber} =`;
 }
@@ -82,6 +95,7 @@ function equals(){
 }
 
 function clear(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     firstNumber = undefined;
     secondNumber = undefined;
     operator = undefined;
@@ -91,6 +105,8 @@ function clear(e){
 }
 
 function numberSelect(e){
+    clearIndicator =1;
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     let targetNumber;
     if(e.type === "click"){
         targetNumber = e.target;
@@ -119,6 +135,7 @@ function numberSelect(e){
 }
 
 function decimal(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     if(decimalIndicator === 1){
         if(operator!=undefined){
             switch(i){
@@ -151,6 +168,7 @@ function decimal(e){
 }
 
 function plusMinus(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     if(screen.textContent===""){
         return;
     }
@@ -160,6 +178,7 @@ function plusMinus(e){
 }
 
 function backSpace(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     let array = screen.textContent.split("")
     if (array.length >0){
         array.pop();
@@ -243,7 +262,7 @@ function removeTransition(e){
         if (typeButton.includes('others')){
             e.target.classList.remove('selectedOthers');
         }
-        else if (typeButton.includes('operators') || typeButton.includes('equals')){
+        else if (typeButton.includes('equals')){
             e.target.classList.remove('selectedOperators');
         }
         else if (typeButton.includes('numbers')|| typeButton.includes('decimal')){
@@ -259,19 +278,23 @@ function inputScreen(e){
     let x=e.which||e.keyCode;
     if (e.key >= 0 && e.key <= 9) { 
         document.querySelector(`div[data-number="${e.key}"]`).classList.add('selectedNumbers');
+        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
         numberSelect(e);
       }
     else if(e.key === "Escape"){
         clear();
         document.querySelector(`div[data-others="clear"]`).classList.add('selectedOthers');
+        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     }
     else if(e.key === "Backspace"){
         backSpace();
         document.querySelector(`div[data-others="backspace"]`).classList.add('selectedOthers');
+        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     }
     else if(e.key === "=" || e.key === "Enter"){
         equals();
         document.querySelector(`div[data-operator="="]`).classList.add('selectedOperators');
+        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
     }
     else if(e.key ==="*" || e.key==="-" || e.key==="/" || e.key==="+"){
         store(e);
@@ -279,6 +302,7 @@ function inputScreen(e){
     }
     else if(e.key ==="."){
         document.querySelector(`div[data-number="${e.key}"]`).classList.add('selectedNumbers');
+        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
         decimal();
     }
 }
