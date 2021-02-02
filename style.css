@@ -1,8 +1,9 @@
 *{
 }
 body{
-    font-family:'Courier New', Courier, monospace;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     overflow: hidden;
+    background-color: #3c89f1;
 }
 #calculator{
     margin: auto auto;
@@ -106,4 +107,16 @@ body{
     background-color: #ffffff;
     color: #f1a43c;
     transform: scale(0.98);
+}
+
+header > h1{
+    font-family: 'Syne', Courier, monospace;
+    margin: 20px auto;
+    text-align: center;
+}
+
+footer{
+    font-family: 'Syne', Courier, monospace;
+    margin: 20px auto;
+    text-align: center;
 }

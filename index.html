@@ -10,35 +10,36 @@
     </head>
 
     <body>
+        <header><h1>CALCULATOR</h1></header>
         <div id="calculator">
             <div id="screen">
                 <p id="equation"></p>
                 <p id="operation"></p>
             </div>
             <div id="buttons">
-                <div id="clear" class="others">AC</div>
+                <div id="clear" class="others" data-others="clear">AC</div>
                 <div id="plusMinus" class="others">+/-</div>
-                <div id="delete" class="others">Backspace</div>
-                <div id="division" class="operators">/</div>
+                <div id="delete" class="others" data-others="backspace">Backspace</div>
+                <div id="division" class="operators" data-operator="/">/</div>
                 <div id="seven" class="numbers" data-number='7'>7</div>
                 <div id="eight" class="numbers" data-number='8'>8</div>
                 <div id="nine" class="numbers" data-number='9'>9</div>
-                <div id="multiply" class="operators">x</div>
+                <div id="multiply" class="operators" data-operator="*">x</div>
                 <div id="four" class="numbers" data-number='4'>4</div>
                 <div id="five" class="numbers" data-number='5'>5</div>
                 <div id="six" class="numbers" data-number='6'>6</div>
-                <div id="subtract" class="operators">-</div>
+                <div id="subtract" class="operators" data-operator="-">-</div>
                 <div id="one" class="numbers" data-number='1'>1</div>
                 <div id="two" class="numbers" data-number='2'>2</div>
                 <div id="three" class="numbers" data-number='3'>3</div>
-                <div id="add" class="operators">+</div>
+                <div id="add" class="operators" data-operator="+">+</div>
                 <div id="zero" class="numbers" data-number='0'>0</div>
-                <div id="decimal" class="decimal">.</div>
-                <div id="equals" class="equals">=</div>
+                <div id="decimal" class="decimal" data-number='.'>.</div>
+                <div id="equals" class="equals" data-operator='='>=</div>
 
             </div>
         </div>
-
+        <footer>By: ksbrion (2020)</footer>
         
         <script src="script.js"></script>
     </body>
