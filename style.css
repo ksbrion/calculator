@@ -7,7 +7,7 @@ body{
 #calculator{
     margin: auto auto;
     background-color: black;
-    height: 600px;
+    min-height: 570px;
     width: 310px; 
     display: flex;
     flex-direction: column;
@@ -16,6 +16,7 @@ body{
 
 #screen{
     flex-grow: 2;
+    flex-wrap: wrap;
     display: flex;
     align-items: flex-end;
     color:white;
@@ -24,11 +25,22 @@ body{
 
 }
 
+
+
 #screen > p{
     margin: 0;
     padding: 0;
     width: 100%;
+    font-size: 50px;
     text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
+    
+}
+
+#screen > #equation{
+    font-size: 20px;
+    align-self: flex-start;
 }
 
 #buttons{
