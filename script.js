@@ -126,7 +126,7 @@ if(firstNumber === undefined || secondNumber === undefined || operator === "") r
         case '/':
             result=division(firstNumber, secondNumber);
     }
-
+    operatorActive = false;
     if(Number.isNaN(result) || result === Infinity){
         clear();
         equation.textContent="";
