@@ -29,6 +29,9 @@ let x = e.key || e.target.getAttribute('data-key');
             operatorButton.forEach(button => button.classList.remove('selectedOperators'));
 
             screen.textContent = textAppend(x);
+            if(firstNumber != undefined){
+                operatorActive = true;
+            }
           }
         else if(x === "Escape"){
             document.querySelector(`div[data-key="${x}"]`).classList.add('selectedOthers');
@@ -37,9 +40,10 @@ let x = e.key || e.target.getAttribute('data-key');
             clear();
         }
         else if(x === "Backspace"){
-            backSpace();
             document.querySelector(`div[data-key="${x}"]`).classList.add('selectedOthers');
             operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+
+            backSpace();
         }
         else if(x=== "=" || x=== "Enter"){
             x ="Enter";
@@ -76,7 +80,7 @@ let x = e.key || e.target.getAttribute('data-key');
             }
             else{
                 firstNumber = parseFloat(screen.textContent.replace(/,/g, ''));
-                operatorActive = true;
+                // operatorActive = true;
             }
         }
     }
