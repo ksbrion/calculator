@@ -76,7 +76,6 @@ let x = e.key || e.target.getAttribute('data-key');
                 firstNumber = result;
                 screen.textContent = textAppend(result);
                 text = "0";
-      
             }
             else{
                 firstNumber = parseFloat(screen.textContent.replace(/,/g, ''));
@@ -132,7 +131,6 @@ if(firstNumber === undefined || secondNumber === undefined || operator === "") r
         clear();
         equation.textContent="";
         return "Error";
-        
     }
     else{
         equation.textContent=`${firstNumber} ${operator} ${secondNumber} =`;
@@ -176,7 +174,6 @@ function removeTransition(e){
     }
 }
 
-
 function clear(e){
     text="0";
     screen.textContent="0";
@@ -186,7 +183,6 @@ function clear(e){
     firstNumber = undefined;
     secondNumber =undefined;
 }
-
 
 function plusMinus(e){
     operatorButton.forEach(button => button.classList.remove('selectedOperators'));

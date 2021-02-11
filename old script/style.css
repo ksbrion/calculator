@@ -109,12 +109,6 @@ body{
     transform: scale(0.98);
 }
 
-.selectedEquals{
-    background-color: #ffffff;
-    color: #f1a43c;
-    transform: scale(0.98);
-}
-
 header > h1{
     font-family: 'Syne', Courier, monospace;
     margin: 20px auto;
