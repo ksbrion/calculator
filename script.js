@@ -1,220 +1,140 @@
 let firstNumber;
 let secondNumber;
-let operator;
-let i =0; //Indicator if screen should be cleared ex. screen should be cleared when typing secondNumber
-let clearIndicator =1;  //Indicator for the equals button; such that the operation would repeat when equal button is pressed more than once ex. 1+1 = = = should be equal 4 
-let decimalIndicator =1; //Indicator to prevent two or more decimal points;
-let operatorIndicator = 0; //Indicator to allow operator button function for several operations ex. 12 + 7 - 5 * 3 = 42
 let screen = document.querySelector('#screen #operation');
 let equation  = document.querySelector('#screen #equation');
-let operatorButton = Array.from(document.querySelectorAll('#buttons .operators'));
-let numberButton = Array.from(document.querySelectorAll('#buttons .numbers'));
-let buttons = Array.from(document.querySelectorAll('#buttons div'));
-
-screen.textContent="";
+let text = "0";
+let operator = "";
+let equalActive = false;
+let operatorActive = false;
+screen.textContent=text;
 equation.textContent="";
 
-operatorButton.forEach(button => button.addEventListener('click', store));
-numberButton.forEach(button => button.addEventListener('click', numberSelect));
-document.querySelector('#equals').addEventListener('click', equals);
-document.querySelector('#clear').addEventListener('click', clear);
-document.querySelector('#decimal').addEventListener('click', decimal);
+
+//Keydown Events
+document.addEventListener('keydown', inputEvent); 
+
+//Click Events
+let buttons = Array.from(document.querySelectorAll('#buttons'));
+let operatorButton = Array.from(document.querySelectorAll('#buttons .operators'));
+buttons.forEach(button => button.addEventListener('click', inputEvent));
+buttons.forEach(button => button.addEventListener('transitionend', removeTransition));
 document.querySelector('#plusMinus').addEventListener('click', plusMinus);
 document.querySelector('#delete').addEventListener('click',backSpace);
-document.addEventListener('keydown', inputScreen); 
 
 
-function operatorStore(targetOperation){
-        clearIndicator =1;
-        decimalIndicator = 1;
-        operator = targetOperation.getAttribute('id');
-        if(screen.textContent===""){
-            firstNumber = 0;
+function inputEvent(e){
+let x = e.key || e.target.getAttribute('data-key');
+        if ((x >= 0 && x <= 9) || x ===".") { 
+            document.querySelector(`div[data-key="${x}"]`).classList.add('selectedNumbers');
+            operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+
+            screen.textContent = textAppend(x);
+          }
+        else if(x === "Escape"){
+            document.querySelector(`div[data-key="${x}"]`).classList.add('selectedOthers');
+            operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+
+            clear();
         }
-        else {
-            firstNumber = parseFloat(screen.textContent);
+        else if(x === "Backspace"){
+            backSpace();
+            document.querySelector(`div[data-key="${x}"]`).classList.add('selectedOthers');
+            operatorButton.forEach(button => button.classList.remove('selectedOperators'));
         }
-        operatorIndicator = 1;
-}
+        else if(x=== "=" || x=== "Enter"){
+            x ="Enter";
+            document.querySelector(`div[data-key="${x}"]`).classList.add('selectedEquals');
+            operatorButton.forEach(button => button.classList.remove('selectedOperators'));
 
-function store(e){
-    let targetOperation;
-    if(e.type === "click"){
-        targetOperation = e.target;
-    }
-    else if (e.type === "keydown"){
-        let y = e.key;
-        targetOperation = document.querySelector(`div[data-operator="${y}"]`)
-    }
-    else return;
-    if(operatorIndicator ===0){
-        operatorStore(targetOperation)
-    }
-    else{
-        equal();
-        operatorStore(targetOperation);
-    }
-}
-
-//function when operator act as an equal operator ex. 12 + 7 - 5 * 3 =
-function equal(){
-    if(firstNumber === undefined) return;
-    let result;
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    
-    if (clearIndicator == 1){
-        if(operatorIndicator === 0){
-            secondNumber= secondNumber;
-            firstNumber = parseFloat(screen.textContent);
-        }
-        else{
-        secondNumber = parseFloat(screen.textContent);
-        }
-
-        if(Number.isNaN(secondNumber)) return;
-        
-        result = operate(firstNumber, secondNumber, operator);
-            if(Number.isNaN(result) || result === Infinity){
-                clear();
-                screen.textContent="Error";
+            operatorActive = false;
+            text = "0";
+            if(equalActive){
+                firstNumber = parseFloat(screen.textContent.replace(/,/g, ''));
             }
             else{
-                screen.textContent=result;
-                clearIndicator = 0;
-                decimalIndicator = 1;
-                i=0;
+                secondNumber = parseFloat(screen.textContent.replace(/,/g, ''));
+                equalActive = true;
             }
-        
-    }
-    else{
-        firstNumber = operate(firstNumber, secondNumber, operator);
-        if(Number.isNaN(secondNumber)) return;
-        else{
-        screen.textContent=operate(firstNumber, secondNumber, operator);
-        i=0;
+            result = operate(firstNumber, secondNumber, operator);
+            screen.textContent = textAppend(result);
+            text = "0";
         }
-    }
-    (screen.textContent==="Error") ? equation.textContent="" : equation.textContent=`${firstNumber} ${convertOperator(operator)} ${secondNumber} =`;
-}
+        else if(x ==="*" || x==="-" || x==="/" || x==="+"){
+            operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+            document.querySelector(`div[data-key="${x}"]`).classList.add('selectedOperators');
 
-//function when equals button is pressed
-function equals(){
-    equal();
-    operatorIndicator=0;
-}
-
-function clear(e){
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    firstNumber = undefined;
-    secondNumber = undefined;
-    operator = undefined;
-    clearIndicator = 1;
-    screen.textContent="";
-    equation.textContent="";
-    i =0; 
-    decimalIndicator =1; 
-    operatorIndicator = 0; 
-}
-
-function numberSelect(e){
-    clearIndicator =1;
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    let targetNumber;
-    if(e.type === "click"){
-        targetNumber = e.target;
-        console.log(targetNumber);
-    }
-    else if (e.type === "keydown"){
-        let y = e.key;
-        targetNumber = document.querySelector(`div[data-number="${y}"]`)
-    }
-
-    if(operator!=undefined){
-        switch(i){
-            case 0:
-                screen.textContent = "";
-                screen.textContent += targetNumber.getAttribute('data-number');
-                i += 1;
-                break;
-            case 1:
-                screen.textContent += targetNumber.getAttribute('data-number');
-                break;
-        }
-    }
-    else{
-        screen.textContent += targetNumber.getAttribute('data-number');
-    }
-}
-
-function decimal(e){
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    if(decimalIndicator === 1){
-        if(operator!=undefined){
-            switch(i){
-                case 0:
-                    screen.textContent = "0";
-                    screen.textContent += '.';
-                    i += 1;
-                    decimalIndicator = 0;
-                    break;
-                case 1:
-                    screen.textContent += '.';
-                    decimalIndicator = 0;
-                    break;
-            }
-        }
-        else{
-            if(screen.textContent===""){
-                screen.textContent += "0."
-                decimalIndicator = 0;
+            equalActive = false;
+            operator = x;
+            text = "0";
+            if(operatorActive){
+                secondNumber = parseFloat(screen.textContent.replace(/,/g, ''));
+                result = operate(firstNumber, secondNumber, operator);
+                firstNumber = result;
+                screen.textContent = textAppend(result);
+                text = "0";
+      
             }
             else{
-                screen.textContent += "."
-                decimalIndicator = 0;
+                firstNumber = parseFloat(screen.textContent.replace(/,/g, ''));
+                operatorActive = true;
             }
         }
-
-
     }
-    else return;
-}
 
-function plusMinus(e){
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    if(screen.textContent===""){
-        return;
+function textAppend(x){
+    switch(x){
+        case ".":
+            if(text.includes(".")){
+                text += "";
+            }
+            else{
+                text += ".";
+            }
+            break;
+        default:
+                if (text === "0"){
+                    text = "";
+                    text = x;
+                }
+                else{
+                    text += x;
+                }
+            break;
     }
-    else{
-    screen.textContent = parseFloat(screen.textContent)*-1;
-    }
-}
-
-function backSpace(e){
-    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    let array = screen.textContent.split("")
-    if (array.length >0){
-        array.pop();
-        screen.textContent = array.join("");
-    }
-    else return;
+    var parts = text.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
 }
 
 function operate(firstNumber, secondNumber, operator){
+if(firstNumber === undefined || secondNumber === undefined || operator === "") return;
+
     let result;
     switch(operator){
-        case 'add':
+        case '+':
             result = add(firstNumber,secondNumber);
             break;
-        case 'subtract':
+        case '-':
             result = subtract(firstNumber, secondNumber);
             break;
-        case 'multiply':
+        case '*':
             result = multiply(firstNumber, secondNumber);
             break;
-        case 'division':
+        case '/':
             result=division(firstNumber, secondNumber);
     }
-    return result;
+
+    if(Number.isNaN(result) || result === Infinity){
+        clear();
+        equation.textContent="";
+        return "Error";
+        
+    }
+    else{
+        equation.textContent=`${firstNumber} ${operator} ${secondNumber} =`;
+        return result
+        
+    }
 }
 
 function add(a,b){
@@ -233,36 +153,6 @@ function division(a,b){
     return Math.round((a/b)*100000)/100000;
 }
 
-function convertOperator(operator) {
-    if (operator === "division") return "÷";
-    if (operator  === "multiply") return "×";
-    if (operator  === "subtract") return "−";
-    if (operator  === "add") return "+";
-  }
-
-//Button animation;
-buttons.forEach(buttons => buttons.addEventListener('click', selected));
-
-function selected(e){
-    let typeButton = e.target.getAttribute("class");
-    if (typeButton.includes('others')){
-        e.target.classList.add('selectedOthers');
-        
-    }
-    else if (typeButton.includes('operators') || typeButton.includes('equals')){
-        e.target.classList.add('selectedOperators');
-    }
-    else if (typeButton.includes('numbers')){
-        e.target.classList.add('selectedNumbers');
-    }
-    else if (typeButton.includes('decimal')){
-        e.target.classList.add('selectedNumbers');
-    }
-}
-
-//Button animation;
-buttons.forEach(buttons => buttons.addEventListener('transitionend', removeTransition));
-
 function removeTransition(e){
     if (e.propertyName !== 'transform') return;
     else{
@@ -270,48 +160,51 @@ function removeTransition(e){
         if (typeButton.includes('others')){
             e.target.classList.remove('selectedOthers');
         }
-        else if (typeButton.includes('equals')){
-            e.target.classList.remove('selectedOperators');
-        }
         else if (typeButton.includes('numbers')|| typeButton.includes('decimal')){
             e.target.classList.remove('selectedNumbers');
         }
         else if(typeButton.includes('decimal')){
             e.target.classList.remove('selectedNumbers');
-    }
+        }
+        else if(typeButton.includes('equals')){
+        e.target.classList.remove('selectedEquals');
+        }
     }
 }
 
-function inputScreen(e){
-    let x=e.which||e.keyCode;
-    if (e.key >= 0 && e.key <= 9) { 
-        document.querySelector(`div[data-number="${e.key}"]`).classList.add('selectedNumbers');
-        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-        numberSelect(e);
-      }
-    else if(e.key === "Escape"){
-        clear();
-        document.querySelector(`div[data-others="clear"]`).classList.add('selectedOthers');
-        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+
+function clear(e){
+    text="0";
+    screen.textContent="0";
+    equation.textContent="";
+    operatorActive = false;
+    equalActive = false;
+    firstNumber = undefined;
+    secondNumber =undefined;
+}
+
+
+function plusMinus(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+    if(screen.textContent===""){
+        return;
     }
-    else if(e.key === "Backspace"){
-        backSpace();
-        document.querySelector(`div[data-others="backspace"]`).classList.add('selectedOthers');
-        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    }
-    else if(e.key === "=" || e.key === "Enter"){
-        equals();
-        document.querySelector(`div[data-operator="="]`).classList.add('selectedOperators');
-        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-    }
-    else if(e.key ==="*" || e.key==="-" || e.key==="/" || e.key==="+"){
-        store(e);
-        document.querySelector(`div[data-operator="${e.key}"]`).classList.add('selectedOperators');
-    }
-    else if(e.key ==="."){
-        document.querySelector(`div[data-number="${e.key}"]`).classList.add('selectedNumbers');
-        operatorButton.forEach(button => button.classList.remove('selectedOperators'));
-        decimal();
+    else{
+    screen.textContent = parseFloat(screen.textContent)*-1;
+    text = screen.textContent;
     }
 }
+
+function backSpace(e){
+    operatorButton.forEach(button => button.classList.remove('selectedOperators'));
+    let array = screen.textContent.split("")
+    if (array.length >0){
+        array.pop();
+        screen.textContent = array.join("");
+        text=screen.textContent;
+    }
+    else return;
+}
+
+
 
